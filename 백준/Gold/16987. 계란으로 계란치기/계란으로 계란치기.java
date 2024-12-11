@@ -1,67 +1,66 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    static int N; // 계란의 수
-    static int[][] eggs; // 계란 정보 (내구도, 무게)
-    static int maxBroken = 0; // 최대 깨진 계란 수
+    static int n;
+    static int maxEgg = 0;
+
+    static class Egg {
+        int weight, durability;
+
+        public Egg(int durability, int weight) {
+            this.weight = weight;
+            this.durability = durability;
+        }
+    }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // 계란 개수와 정보 입력
-        N = sc.nextInt();
-        eggs = new int[N][2];
-        for (int i = 0; i < N; i++) {
-            eggs[i][0] = sc.nextInt(); // 내구도
-            eggs[i][1] = sc.nextInt(); // 무게
+        n = sc.nextInt();
+
+        Egg[] eggs = new Egg[n];
+
+        for (int i = 0; i < n; i++) {
+            eggs[i] = new Egg(sc.nextInt(), sc.nextInt());
         }
 
-        // 재귀 시작
-        dfs(0);
-        System.out.println(maxBroken);
+        breakEgg(eggs, 0);
+
+        System.out.println(maxEgg);
+
     }
 
-    // 재귀 함수
-    static void dfs(int index) {
-        // 모든 계란을 한 번씩 들고 난 후 종료
-        if (index == N) {
-            // 깨진 계란 개수 세기
-            int brokenCount = 0;
-            for (int i = 0; i < N; i++) {
-                if (eggs[i][0] <= 0) brokenCount++;
+    static void breakEgg(Egg[] eggs, int cnt) {
+        if (cnt == n) {
+            int max = 0;
+            for (int i = 0; i < n; i++) {
+                if (eggs[i].durability <=0) {
+                    max++;
+                }
             }
-            maxBroken = Math.max(maxBroken, brokenCount);
+            maxEgg = Math.max(max, maxEgg);
             return;
         }
 
-        // 현재 계란이 이미 깨졌다면 다음으로 넘어감
-        if (eggs[index][0] <= 0) {
-            dfs(index + 1);
-            return;
+        boolean anyHit = false;
+
+        for (int i = 0; i < n; i++) {
+            if (i != cnt && eggs[i].durability > 0 && eggs[cnt].durability > 0) {
+                anyHit = true;
+
+                eggs[cnt].durability -= eggs[i].weight;
+                eggs[i].durability -= eggs[cnt].weight;
+
+                breakEgg(eggs, cnt + 1);
+
+                eggs[cnt].durability += eggs[i].weight;
+                eggs[i].durability += eggs[cnt].weight;
+            }
+        }
+        
+        if (!anyHit) {
+            breakEgg(eggs, cnt + 1);
         }
 
-        boolean hit = false; // 칠 수 있는 계란이 있는지 확인
-
-        // 다른 계란을 칠지 결정
-        for (int i = 0; i < N; i++) {
-            if (i == index || eggs[i][0] <= 0) continue; // 자신이거나 이미 깨진 계란이면 스킵
-
-            // 충돌 처리
-            eggs[index][0] -= eggs[i][1];
-            eggs[i][0] -= eggs[index][1];
-            hit = true;
-
-            // 다음 단계로 재귀 호출
-            dfs(index + 1);
-
-            // 상태 복구 (백트래킹)
-            eggs[index][0] += eggs[i][1];
-            eggs[i][0] += eggs[index][1];
-        }
-
-        // 칠 수 있는 계란이 없으면 다음 단계로 넘어감
-        if (!hit) {
-            dfs(index + 1);
-        }
     }
 }
