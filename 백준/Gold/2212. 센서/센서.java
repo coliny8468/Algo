@@ -8,6 +8,11 @@ public class Main {
         int tower = sc.nextInt();
         List<Integer> sensor = new ArrayList<>();
 
+        if (n <= tower) {
+            System.out.println(0);
+            return;
+        }
+
         for (int i = 0; i < n; i++) {
             sensor.add(sc.nextInt());
         }
@@ -34,13 +39,9 @@ public class Main {
         int sumOfRemovedDistances = 0;
 
         // 가장 큰 간격부터 제거
-        if (n>tower) {
-            for (int i = 0; i < tower - 1; i++) {
-                sumOfRemovedDistances += disOrder.get(i);
-            }
-        } else{
-            System.out.println(0);
-            return;
+     
+        for (int i = 0; i < tower - 1; i++) {
+            sumOfRemovedDistances += disOrder.get(i);
         }
 
 
