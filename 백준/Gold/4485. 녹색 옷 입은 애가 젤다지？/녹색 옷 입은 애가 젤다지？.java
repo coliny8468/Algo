@@ -45,7 +45,7 @@ public class Main {
 			System.out.println("Problem"+ " "+ cnt+": " + minus[n-1][n-1]);
 			n = sc.nextInt();
 	
-		}
+			}
 		}
 		
 	}
