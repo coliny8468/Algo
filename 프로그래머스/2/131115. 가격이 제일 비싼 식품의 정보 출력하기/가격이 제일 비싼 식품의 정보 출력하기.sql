@@ -1,0 +1,5 @@
+SELECT  *
+FROM    FOOD_PRODUCT
+ORDER BY price DESC
+LIMIT 1;          -- PostgreSQL/SQLite/MySQL
+
